@@ -1,56 +1,67 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, View, StyleSheet, Dimensions } from 'react-native'; 
+import { Image, View, StyleSheet, Dimensions } from 'react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceShowsScreen } from '../screens/SpaceShowsScreen';
 import { ShopScreen } from '../screens/ShopScreen';
 import { iconsConfig } from '../components/iconsConfig';
 
 const Tab = createBottomTabNavigator();
-const screenWidth = Dimensions.get('window').width; 
+const screenWidth = Dimensions.get('window').width;
 
 export default function BottomTabNavigator() {
   return (
     <View style={{ flex: 1 }}>
       <Tab.Navigator
-        initialRouteName="Home" 
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
+          tabBarIcon: ({ color, size, focused }) => {
+            const backgroundImage = focused ? require('../assets/icons/Ellipse 3.png') : null;
+            
+            let iconSource;
+            let iconStyle;
+            
             if (route.name === 'Home') {
-              return (
-                <Image
-                  source={iconsConfig.home.path}
-                  style={[iconsConfig.home.style, { tintColor: color }]}
-                  resizeMode="contain"
-                />
-              );
+              iconSource = iconsConfig.home.path;
+              iconStyle = iconsConfig.home.style;
             } else if (route.name === 'SpaceShows') {
-              return (
-                <Image
-                  source={iconsConfig.spaceShows.path}
-                  style={[iconsConfig.spaceShows.style, { tintColor: color }]}
-                  resizeMode="contain"
-                />
-              );
+              iconSource = iconsConfig.spaceShows.path;
+              iconStyle = iconsConfig.spaceShows.style;
             } else if (route.name === 'Shop') {
-              return (
+              iconSource = iconsConfig.shop.path;
+              iconStyle = iconsConfig.shop.style;
+            }
+
+            return (
+              <View style={styles.iconContainer}>
+                {focused && (
+                  <Image
+                    source={backgroundImage}
+                    style={styles.backgroundImage}
+                    resizeMode="contain"
+                  />
+                )}
                 <Image
-                  source={iconsConfig.shop.path}
-                  style={[iconsConfig.shop.style, { tintColor: color }]}
+                  source={iconSource}
+                  style={[iconStyle, { tintColor: color }]}
                   resizeMode="contain"
                 />
-              );
-            }
+              </View>
+            );
           },
-          tabBarLabelStyle: { fontSize: 12 },
+          tabBarLabelStyle: {
+            fontSize: 10,
+            marginLeft: -15, 
+            textAlign: 'center', 
+          },
           tabBarStyle: {
-            backgroundColor: 'black', 
-            elevation: 0, 
+            backgroundColor: 'black',
+            elevation: 0,
             shadowOpacity: 0,
-            borderTopWidth: 0, 
+            borderTopWidth: 0,
           },
-          tabBarActiveTintColor: '#FFD700', 
-          tabBarInactiveTintColor: '#fff', 
+          tabBarActiveTintColor: '#FFD700',
+          tabBarInactiveTintColor: '#fff',
           headerShown: false,
         })}
       >
@@ -62,7 +73,7 @@ export default function BottomTabNavigator() {
       {/* Footer Line Image */}
       <Image
         source={iconsConfig.footerLine.path}
-        style={[styles.footerLine, { width: screenWidth * 1 }]} 
+        style={[styles.footerLine, { width: screenWidth * 1 }]}
         resizeMode="contain"
       />
     </View>
@@ -72,7 +83,19 @@ export default function BottomTabNavigator() {
 const styles = StyleSheet.create({
   footerLine: {
     position: 'absolute',
-    bottom: 50, 
-    height: 17, 
+    bottom: 50,
+    height: 17,
+  },
+  iconContainer: {
+    position: 'relative', 
+    width: 40, 
+    height: 40, 
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: 50,  
+    height: 50,
+    top: -12,   
+    left: -13, 
   },
 });
