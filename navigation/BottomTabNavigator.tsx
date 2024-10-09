@@ -1,101 +1,141 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, View, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceShowsScreen } from '../screens/SpaceShowsScreen';
 import { ShopScreen } from '../screens/ShopScreen';
-import { iconsConfig } from '../components/iconsConfig';
+import { ProfileScreen } from '../screens/ProfileScreen';
 
-const Tab = createBottomTabNavigator();
-const screenWidth = Dimensions.get('window').width;
+const initialLayout = { width: Dimensions.get('window').width };
 
 export default function BottomTabNavigator() {
+  const [index, setIndex] = useState(1); // Start from Home as the center
+  const [routes] = useState([
+    { key: 'spaceshows', title: 'SpaceShows' },
+    { key: 'home', title: 'Home' },
+    { key: 'shop', title: 'Shop' },
+    { key: 'profile', title: 'profile'},
+  ]);
+
+  const renderScene = SceneMap({
+    spaceshows: SpaceShowsScreen,
+    home: HomeScreen,
+    shop: ShopScreen,
+    profile: ProfileScreen,
+  });
+
   return (
     <View style={{ flex: 1 }}>
-      <Tab.Navigator
-        initialRouteName="Home"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size, focused }) => {
-            const backgroundImage = focused ? require('../assets/icons/Ellipse 3.png') : null;
-            
-            let iconSource;
-            let iconStyle;
-            
-            if (route.name === 'Home') {
-              iconSource = iconsConfig.home.path;
-              iconStyle = iconsConfig.home.style;
-            } else if (route.name === 'SpaceShows') {
-              iconSource = iconsConfig.spaceShows.path;
-              iconStyle = iconsConfig.spaceShows.style;
-            } else if (route.name === 'Shop') {
-              iconSource = iconsConfig.shop.path;
-              iconStyle = iconsConfig.shop.style;
-            }
-
-            return (
-              <View style={styles.iconContainer}>
-                {focused && (
-                  <Image
-                    source={backgroundImage}
-                    style={styles.backgroundImage}
-                    resizeMode="contain"
-                  />
-                )}
-                <Image
-                  source={iconSource}
-                  style={[iconStyle, { tintColor: color }]}
-                  resizeMode="contain"
-                />
-              </View>
-            );
-          },
-          tabBarLabelStyle: {
-            fontSize: 10,
-            marginLeft: -15, 
-            textAlign: 'center', 
-          },
-          tabBarStyle: {
-            backgroundColor: 'black',
-            elevation: 0,
-            shadowOpacity: 0,
-            borderTopWidth: 0,
-          },
-          tabBarActiveTintColor: '#FFD700',
-          tabBarInactiveTintColor: '#fff',
-          headerShown: false,
-        })}
-      >
-        <Tab.Screen name="SpaceShows" component={SpaceShowsScreen} options={{ tabBarLabel: 'SpaceShows' }} />
-        <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
-        <Tab.Screen name="Shop" component={ShopScreen} options={{ tabBarLabel: 'Shop' }} />
-      </Tab.Navigator>
-
-      {/* Footer Line Image */}
-      <Image
-        source={iconsConfig.footerLine.path}
-        style={[styles.footerLine, { width: screenWidth * 1 }]}
-        resizeMode="contain"
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+        renderTabBar={() => null} 
+        swipeEnabled={true}
       />
+      <CustomTabBar index={index} setIndex={setIndex} />
     </View>
   );
 }
 
+interface CustomTabBarProps {
+  index: number;
+  setIndex: (index: number) => void;
+}
+
+function CustomTabBar({ index, setIndex }: CustomTabBarProps) {
+    // Dynamically rearrange the order of tabs and limit to 3 visible at once
+    const getTabOrder = () => {
+      if (index === 0) {
+        return (
+          <>
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={0} label="SpaceShows" icon={require('../assets/icons/spaceshows.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={1} label="Home" icon={require('../assets/icons/home.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={2} label="Shop" icon={require('../assets/icons/shop.png')} />
+          </>
+        );
+      } else if (index === 1) {
+        return (
+          <>
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={0} label="SpaceShows" icon={require('../assets/icons/spaceshows.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={1} label="Home" icon={require('../assets/icons/home.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={2} label="Shop" icon={require('../assets/icons/shop.png')} />
+          </>
+        );
+      } else if (index === 2) {
+        return (
+          <>
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={1} label="Home" icon={require('../assets/icons/home.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={2} label="Shop" icon={require('../assets/icons/shop.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={3} label="Profile" icon={require('../assets/icons/profile.png')} />
+          </>
+        );
+      } else {
+        return (
+          <>
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={1} label="Home" icon={require('../assets/icons/home.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={2} label="Shop" icon={require('../assets/icons/shop.png')} />
+            <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={3} label="Profile" icon={require('../assets/icons/profile.png')} />
+          </>
+        );
+      }
+    };
+  
+    return <View style={styles.tabContainer}>{getTabOrder()}</View>;
+  }
+  
+
+// Single tab item component
+function TabItem({ setIndex, selectedIndex, currentIndex, label, icon }: any) {
+  return (
+    <TouchableOpacity onPress={() => setIndex(currentIndex)} style={styles.tabButton}>
+      <Image
+        source={icon}
+        style={[
+          styles.icon,
+          selectedIndex === currentIndex && styles.activeIcon,
+          selectedIndex === currentIndex && styles.upwardIcon, // Move icon upward when active
+          selectedIndex !== currentIndex && styles.lowerInactiveIcon, // Move inactive icon downward
+        ]}
+      />
+      <Text style={[styles.label, selectedIndex === currentIndex && styles.activeLabel]}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
-  footerLine: {
-    position: 'absolute',
-    bottom: 50,
-    height: 17,
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#000',
+    paddingVertical: 10,
   },
-  iconContainer: {
-    position: 'relative', 
-    width: 40, 
-    height: 40, 
+  tabButton: {
+    alignItems: 'center',
   },
-  backgroundImage: {
-    position: 'absolute',
-    width: 50,  
+  icon: {
+    width: 30,
+    height: 30,
+    tintColor: '#fff',
+  },
+  activeIcon: {
+    width: 50, // Larger size for active icon
     height: 50,
-    top: -12,   
-    left: -13, 
+    tintColor: '#FFD700', // Active color
+  },
+  upwardIcon: {
+    marginBottom: 10, // Move the active icon upwards
+  },
+  lowerInactiveIcon: {
+    marginTop: 25, // Move inactive icons downward
+  },
+  label: {
+    fontSize: 12,
+    color: '#fff',
+    marginTop: 5,
+  },
+  activeLabel: {
+    color: '#FFD700', // Active label color
   },
 });
