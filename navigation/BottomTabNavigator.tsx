@@ -71,7 +71,7 @@ function CustomTabBar({ index, setIndex }: CustomTabBarProps) {
             <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={3} label="Profile" icon={require('../assets/icons/profile.png')} />
           </>
         );
-      } else {
+      } else if (index === 3){
         return (
           <>
             <TabItem setIndex={setIndex} selectedIndex={index} currentIndex={1} label="Home" icon={require('../assets/icons/home.png')} />
