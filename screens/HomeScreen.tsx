@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 
 const { width } = Dimensions.get('window'); // Get the screen width for layout
 
 export const HomeScreen = () => {
     const [fontsLoaded] = useFonts({
-        'VT323': require('../assets/fonts/VT323-Regular.ttf'), // Correct font path
+        'VT323': require('../assets/fonts/VT323-Regular.ttf'),
+        'Joystix': require('../assets/fonts/joystix.otf')
     });
 
     if (!fontsLoaded) {
-        return null; // Return null or a loading spinner while fonts are loading
+        return <Text>Loading...</Text>; // Return a loading indicator if fonts aren't loaded
     }
 
     const slides = new Array(10).fill(0); // Array of 10 slides
@@ -30,8 +31,14 @@ export const HomeScreen = () => {
                             {/* Club Name */}
                             <Text style={styles.clubName}>AEROMODELLING Club</Text>
                             
-                            {/* Item Image */}
-                            <Image source={{ uri: 'https://storage.googleapis.com/staging.testproject-435112.appspot.com/sdd-removebg-preview.png' }} style={styles.itemImage} />
+                            {/* Wrapper for the custom image background behind the itemImage */}
+                            <View style={styles.itemImageWrapper}>
+                                <Image 
+                                    source={require('../assets/icons/bluebg.png')} // Your custom image as background
+                                    style={styles.backgroundImage}
+                                />
+                                <Image source={{ uri: 'https://storage.googleapis.com/staging.testproject-435112.appspot.com/sdd-removebg-preview.png' }} style={styles.itemImage} />
+                            </View>
 
                             {/* Item Name and Price */}
                             <Text style={styles.itemName}>FPV Drone</Text>
@@ -48,7 +55,7 @@ export const HomeScreen = () => {
                                         source={require('../assets/icons/featuresholder.png')} // Placeholder image
                                         style={styles.placeholderImage}
                                     />
-                                    <Text style={styles.featureText}>Programmable</Text>
+                                    <Text style={styles.featureText}>PROGRAMMABLE</Text>
                                 </View>
 
                                 <View style={styles.imageBox}>
@@ -60,7 +67,7 @@ export const HomeScreen = () => {
                                         source={require('../assets/icons/featuresholder.png')} // Placeholder image
                                         style={styles.placeholderImage}
                                     />
-                                    <Text style={styles.featureText}>DIY Assembly</Text>
+                                    <Text style={styles.featureText}>DIY ASSEMBLY</Text>
                                 </View>
 
                                 <View style={styles.imageBox}>
@@ -72,13 +79,17 @@ export const HomeScreen = () => {
                                         source={require('../assets/icons/featuresholder.png')} // Placeholder image
                                         style={styles.placeholderImage}
                                     />
-                                    <Text style={styles.featureText}>Fly at Home</Text>
+                                    <Text style={styles.featureText}>FLY AT HOME</Text>
                                 </View>
                             </View>
 
-                            {/* Fly Button */}
+                            {/* Fly Button with Image */}
                             <TouchableOpacity style={styles.flyButton}>
-                                <Text style={styles.flyButtonText}>FLY</Text>
+                                <Image 
+                                    source={require('../assets/icons/button.png')} 
+                                    style={styles.flyButtonImage} 
+                                />
+                                <Text style={styles.flyButtonText}>BUY</Text>
                             </TouchableOpacity>
                         </ScrollView>
                     </View>
@@ -107,84 +118,102 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 540,
         height: 605,
-        resizeMode: "stretch",
+        marginTop: 30,
+        resizeMode: 'stretch',
         zIndex: -1, // Send the background image behind other content
     },
     collegeName: {
-        fontFamily: 'VT323',
+        fontFamily: 'VT323', // Custom font applied here
         color: '#fff',
         fontSize: 42,
-        fontWeight: 'bold',
+        marginTop: 20
     },
     clubName: {
-        fontFamily: 'VT323',
+        fontFamily: 'VT323', // Custom font applied here
         color: '#FBF619',
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 20,
+        marginTop: 90,
+        position: 'absolute'
+    },
+    itemImageWrapper: {
+        width: 350, // Adjust this width based on your needs
+        height: 350, // Adjust this height based on your needs
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10, // Reduced margin to move the content up
+        position: 'relative', // Make sure the itemImage stays on top of the background
+    },
+    backgroundImage: {
+        width: '125%', 
+        height: '150%', 
+        position: 'absolute', // Ensure the background stays behind the itemImage
+        resizeMode: 'contain', 
     },
     itemImage: {
-        width: 269,
+        width: 300, // Inside width to be smaller than the wrapper
         height: 215,
         resizeMode: 'contain',
-        marginVertical: 20,
     },
     itemName: {
-        fontFamily: 'VT323',
+        fontFamily: 'VT323', // Custom font applied here
         color: '#fff',
         fontSize: 32,
-        fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 5
     },
     itemPrice: {
         color: '#fff',
+        fontFamily: 'Joystix',
         fontSize: 19,
-        marginBottom: 15,
+        marginBottom: 15, // Reduced bottom margin to move the price up
     },
     imageSection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
         paddingHorizontal: 20,
-        marginBottom: 20,
+        marginBottom: 30, // Reduced bottom margin to move images up
     },
     imageBox: {
         width: 97,
         height: 89,
         alignItems: 'center',
-        position: 'relative', // Allows absolute positioning inside
+        position: 'relative',
+        marginHorizontal: 35,
     },
     image: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#000000',
-        position: 'relative', // Ensure the actual image is positioned absolutely
-        zIndex: 1, // Put actual image behind placeholder
+        backgroundColor: '#000',
+        position: 'relative',
+        zIndex: 1,
     },
     placeholderImage: {
         width: '100%',
         height: '100%',
-        position: 'absolute', // Place the placeholder on top of the actual image
-        zIndex: 2, // Ensure the placeholder is always on top
+        position: 'absolute',
+        zIndex: 2,
     },
     featureText: {
         color: '#fff',
-        fontSize: 14,
+        fontSize: 16,
         marginTop: 5,
+        fontFamily: 'VT323', // Make sure the font is applied here as well
     },
     flyButton: {
-        backgroundColor: '#FBF619',
-        width: 350,
-        height: 54,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
-        marginBottom: 10,
+        marginBottom: 5, // Reduced margin to move the button up
+    },
+    flyButtonImage: {
+        width: 350,
+        height: 54,
+        resizeMode: 'contain',
     },
     flyButtonText: {
-        fontFamily: 'VT323',
+        fontFamily: 'VT323', // Custom font applied here
         color: '#000',
         fontSize: 32,
-        fontWeight: 'bold',
+        position: 'absolute',
+        letterSpacing: 5
     },
 });
-

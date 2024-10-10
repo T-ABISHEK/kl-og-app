@@ -1,5 +1,6 @@
 {
   "expo": {
+    "assets": ["./assets/fonts/"],
     "name": "kl-og-app",
     "slug": "kl-og-app",
     "version": "1.0.0",
@@ -11,6 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     
     "ios": {
       "supportsTablet": true
