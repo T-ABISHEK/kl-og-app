@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text, Image, StyleSheet, Dimensions, Modal, Animated } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SpaceShowsScreen } from '../screens/SpaceShowsScreen';
@@ -15,13 +15,16 @@ export default function BottomTabNavigator() {
         'Joystix': require('../assets/fonts/joystix.otf'),
     });
 
-    const [index, setIndex] = useState<number>(1); // Type for index state
+    const [index, setIndex] = useState<number>(1);
     const [routes] = useState([
         { key: 'spaceshows', title: 'SpaceShows' },
         { key: 'home', title: 'Home' },
         { key: 'shop', title: 'Shop' },
         { key: 'profile', title: 'Profile' },
     ]);
+
+    const [menuVisible, setMenuVisible] = useState(false); // Control side panel visibility
+    const [slideAnim] = useState(new Animated.Value(-Dimensions.get('window').width)); // Animation for sliding panel from left
 
     const renderScene = SceneMap({
         spaceshows: SpaceShowsScreen,
@@ -30,13 +33,30 @@ export default function BottomTabNavigator() {
         profile: ProfileScreen,
     });
 
+    const openMenu = () => {
+        setMenuVisible(true);
+        Animated.timing(slideAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+        }).start();
+    };
+
+    const closeMenu = () => {
+        Animated.timing(slideAnim, {
+            toValue: -Dimensions.get('window').width,
+            duration: 300,
+            useNativeDriver: false,
+        }).start(() => setMenuVisible(false)); // Set menuVisible to false after animation completes
+    };
+
     return (
         <View style={styles.container}>
             {/* Add Topline Image */}
             <Image source={require('../assets/icons/topline.png')} style={styles.topline} />
 
             {/* Header Bar */}
-            <HeaderBar coinAmount={65106} />
+            <HeaderBar coinAmount={65106} openMenu={openMenu} />
 
             {/* Tab View */}
             <TabView
@@ -53,6 +73,33 @@ export default function BottomTabNavigator() {
 
             {/* Custom Tab Bar */}
             <CustomTabBar index={index} setIndex={setIndex} />
+
+            {/* Side Panel Modal */}
+            {menuVisible && (
+                <Modal
+                    visible={menuVisible}
+                    animationType="none"
+                    transparent={true}
+                    onRequestClose={closeMenu} // Close when back is pressed
+                >
+                    <View style={styles.modalContainer}>
+                        <Animated.View style={[styles.sidePanel, { transform: [{ translateX: slideAnim }] }]}>
+                            <TouchableOpacity style={styles.panelButton} onPress={() => alert('Terms and Conditions')}>
+                                <Text style={styles.panelButtonText}>Terms and Conditions</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.panelButton} onPress={() => alert('Privacy Policy')}>
+                                <Text style={styles.panelButtonText}>Privacy Policy</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.panelButton} onPress={() => alert('Logged Out')}>
+                                <Text style={styles.panelButtonText}>Logout</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+
+                        {/* Close the side panel by tapping outside */}
+                        <TouchableOpacity style={styles.overlay} onPress={closeMenu} />
+                    </View>
+                </Modal>
+            )}
         </View>
     );
 }
@@ -60,13 +107,14 @@ export default function BottomTabNavigator() {
 // Header Bar Component
 interface HeaderBarProps {
     coinAmount: number;
+    openMenu: () => void;
 }
 
-function HeaderBar({ coinAmount }: HeaderBarProps) {
+function HeaderBar({ coinAmount, openMenu }: HeaderBarProps) {
     return (
         <View style={styles.headerContainer}>
             {/* Menu Icon */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={openMenu}>
                 <Image 
                     source={require('../assets/icons/menu.png')} 
                     style={styles.menuIcon} 
@@ -75,14 +123,14 @@ function HeaderBar({ coinAmount }: HeaderBarProps) {
 
             {/* Logo */}
             <Image 
-                source={require('../assets/icons/logokl.png')} // Placeholder for logo
+                source={require('../assets/icons/logokl.png')} 
                 style={styles.logo}
             />
 
             {/* Coin Display */}
             <View style={styles.coinContainer}>
                 <Image 
-                    source={require('../assets/icons/coin.png')} // Placeholder for coin icon
+                    source={require('../assets/icons/coin.png')} 
                     style={styles.coinIcon}
                 />
                 <Text style={styles.coinText}>{coinAmount}</Text>
@@ -255,5 +303,35 @@ const styles = StyleSheet.create({
         height: 50,
         resizeMode: 'contain',
         zIndex: 1,
+    },
+
+    // Side Panel and Modal Styles
+    modalContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    sidePanel: {
+        width: '70%',
+        backgroundColor: '#000',
+        paddingTop: 40,
+        paddingHorizontal: 20,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+    },
+    panelButton: {
+        paddingVertical: 15,
+        marginVertical: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#333',
+        width: '100%',
+    },
+    panelButtonText: {
+        fontFamily: 'VT323',
+        fontSize: 20,
+        color: '#fff',
+    },
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
 });
