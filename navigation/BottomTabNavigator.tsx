@@ -31,18 +31,27 @@ export default function BottomTabNavigator() {
     });
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+            {/* Add Topline Image */}
+            <Image source={require('../assets/icons/topline.png')} style={styles.topline} />
+
             {/* Header Bar */}
             <HeaderBar coinAmount={65106} />
-            
+
+            {/* Tab View */}
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={initialLayout}
-                renderTabBar={() => null} 
+                renderTabBar={() => null}
                 swipeEnabled={true}
             />
+
+            {/* Add Bottomline Image */}
+            <Image source={require('../assets/icons/bottomline.png')} style={styles.bottomline} />
+
+            {/* Custom Tab Bar */}
             <CustomTabBar index={index} setIndex={setIndex} />
         </View>
     );
@@ -122,12 +131,21 @@ interface TabItemProps {
 function TabItem({ setIndex, selectedIndex, currentIndex, label, icon }: TabItemProps) {
     return (
         <TouchableOpacity onPress={() => setIndex(currentIndex)} style={styles.tabButton}>
+            {/* Conditionally render the background image if the tab is selected */}
+            {selectedIndex === currentIndex && (
+                <Image
+                    source={require('../assets/icons/buttonbg.png')}
+                    style={styles.buttonBackground}
+                />
+            )}
+
+            {/* Tab Icon */}
             <Image
                 source={icon}
                 style={[
                     styles.icon,
                     selectedIndex === currentIndex && styles.activeIcon,
-                    selectedIndex === currentIndex && styles.upwardIcon, 
+                    selectedIndex === currentIndex && styles.upwardIcon,
                     selectedIndex !== currentIndex && styles.lowerInactiveIcon,
                 ]}
             />
@@ -137,6 +155,10 @@ function TabItem({ setIndex, selectedIndex, currentIndex, label, icon }: TabItem
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#000',
+    },
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -155,7 +177,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         marginTop: 30,
-        marginLeft: 40
+        marginLeft: 40,
     },
     coinContainer: {
         flexDirection: 'row',
@@ -171,7 +193,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Joystix',
         fontSize: 18,
         marginTop: 30,
-        color: '#B0B0B0', // Coin color
+        color: '#B0B0B0',
     },
     tabContainer: {
         flexDirection: 'row',
@@ -182,18 +204,27 @@ const styles = StyleSheet.create({
     tabButton: {
         alignItems: 'center',
     },
+    buttonBackground: {
+        position: 'absolute',
+        width: 65, 
+        height: 65, 
+        top: -12, 
+        zIndex: -1, 
+        resizeMode: 'contain',
+    },
     icon: {
-        width: 30,
-        height: 30,
+        width: 20,
+        height: 20,
+        marginBottom: 1,
         tintColor: '#fff',
     },
     activeIcon: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         tintColor: '#FFD700',
     },
     upwardIcon: {
-        marginBottom: 10,
+        marginBottom: 1,
     },
     lowerInactiveIcon: {
         marginTop: 25,
@@ -202,9 +233,27 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#fff',
         marginTop: 5,
-        fontFamily: 'VT323'
+        fontFamily: 'VT323',
     },
     activeLabel: {
         color: '#FFD700',
+    },
+
+    // Styles for Topline and Bottomline
+    topline: {
+        position: 'absolute',
+        top: 75,
+        width: '100%',
+        height: 50,
+        resizeMode: 'contain',
+        zIndex: 1,
+    },
+    bottomline: {
+        position: 'absolute',
+        bottom: 70,
+        width: '100%',
+        height: 50,
+        resizeMode: 'contain',
+        zIndex: 1,
     },
 });
