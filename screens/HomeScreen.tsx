@@ -116,9 +116,10 @@ const styles = StyleSheet.create({
     },
     bgImage: {
         position: 'absolute',
-        width: 540,
-        height: 605,
+        width: 370,
+        height: 521,
         marginTop: 30,
+        marginLeft: 12,
         resizeMode: 'stretch',
         zIndex: -1, // Send the background image behind other content
     },
@@ -126,22 +127,21 @@ const styles = StyleSheet.create({
         fontFamily: 'VT323', // Custom font applied here
         color: '#fff',
         fontSize: 42,
-        marginTop: 20
+        marginTop: 10
     },
     clubName: {
         fontFamily: 'VT323', // Custom font applied here
         color: '#FBF619',
-        fontSize: 20,
-        marginTop: 90,
+        fontSize: 16,
+        marginTop: 75,
         position: 'absolute'
     },
     itemImageWrapper: {
-        width: 350, // Adjust this width based on your needs
-        height: 350, // Adjust this height based on your needs
+        width: "100%", 
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10, // Reduced margin to move the content up
-        position: 'relative', // Make sure the itemImage stays on top of the background
+        position: 'relative', 
+        zIndex: -1
     },
     backgroundImage: {
         width: '125%', 
@@ -158,27 +158,27 @@ const styles = StyleSheet.create({
         fontFamily: 'VT323', // Custom font applied here
         color: '#fff',
         fontSize: 32,
-        marginBottom: 5
+        marginTop: 15
     },
     itemPrice: {
         color: '#fff',
         fontFamily: 'Joystix',
         fontSize: 19,
-        marginBottom: 15, // Reduced bottom margin to move the price up
+        marginBottom: 10, 
     },
     imageSection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        paddingHorizontal: 20,
-        marginBottom: 30, // Reduced bottom margin to move images up
+        marginBottom: 30,
     },
     imageBox: {
-        width: 97,
+        width: 98.26,
         height: 89,
         alignItems: 'center',
         position: 'relative',
-        marginHorizontal: 35,
+        justifyContent: 'space-between',
+        marginHorizontal: 15,
     },
     image: {
         width: '100%',
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     placeholderImage: {
-        width: '100%',
-        height: '100%',
+        width: 98.26,
+        height: 89,
         position: 'absolute',
         zIndex: 2,
     },
@@ -202,12 +202,10 @@ const styles = StyleSheet.create({
     flyButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 5, // Reduced margin to move the button up
     },
     flyButtonImage: {
         width: 350,
         height: 54,
-        resizeMode: 'contain',
     },
     flyButtonText: {
         fontFamily: 'VT323', // Custom font applied here
