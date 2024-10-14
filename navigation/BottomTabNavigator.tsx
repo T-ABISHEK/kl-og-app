@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
         bottom: 70,
         width: '100%',
         height: 17,
-        resizeMode: 'contain',
+        resizeMode: 'stretch',
         zIndex: 1,
     },
 

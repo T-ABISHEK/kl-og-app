@@ -23,7 +23,6 @@ export const SpaceShowsScreen = () => {
         style={styles.video}
         resizeMode={ResizeMode.COVER}
         shouldPlay
-        isLooping
         useNativeControls={false}
       />
     </View>
@@ -38,7 +37,6 @@ export const SpaceShowsScreen = () => {
         showsVerticalScrollIndicator={false}
         pagingEnabled // Enable paging for snapping behavior
         decelerationRate="fast" // Ensure fast deceleration like Instagram or YouTube
-        contentContainerStyle={styles.flatListContainer}
       />
     </View>
   );
@@ -49,20 +47,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  flatListContainer: {
-    paddingVertical: (height - 533) / 2, // Center the video by adding top/bottom padding
-  },
   shortContainer: {
-    width: 300,  // Fixed width for the video panel
-    height: 533, // Fixed height for the video panel
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: width,  // Full screen width to center the video properly
+    height: height, // Full screen height to ensure proper paging
+    justifyContent: 'center', // Center the video vertically
+    alignItems: 'center', // Center the video horizontally
     backgroundColor: '#000',
-    alignSelf: 'center', // Ensure the panel is centered horizontally
-    marginBottom: 100, // Add space between videos (adjust as needed)
+    paddingVertical: (height - 533) / 2, // Proper padding to center the video within its fixed 533px height
   },
   video: {
-    width: 300,
-    height: 533,
+    width: 300,   // Fixed video width
+    height: 533,  // Fixed video height
   },
 });
